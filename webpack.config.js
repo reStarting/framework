@@ -10,19 +10,7 @@ const paths = {
 }
 
 module.exports = {
-  mode: 'production', //'development',
-  optimization: {
-    splitChunks: {
-      chunks: 'async',
-      cacheGroups: {
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          chunks: 'all'
-        }
-      }
-    },
-    runtimeChunk: true
-  },
+  // mode: 'production', //'development',
   module: {
     rules: [
       // {
@@ -109,7 +97,6 @@ module.exports = {
       template: 'src/index.html'
     })
   ],
-  devtool: 'source-map',
   output: {
     path: path.join(__dirname, paths.dist),
     publicPath: '/',
