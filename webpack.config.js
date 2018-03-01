@@ -5,10 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 
-const paths = {
-  src: 'src',
-  dist: 'dist'
-}
+const { paths } = require('./config');
 
 module.exports = {
   // mode: 'production', //'development',
@@ -70,7 +67,7 @@ module.exports = {
             plugins: () => [
               autoprefixer({
                 remove: false,
-                browsers: ['> 1%', 'last 3 versions', 'Firefox >= 20'/* , 'iOS >=7' */]
+                browsers: ['> 1%', 'Firefox >= 20', 'ie > 8'/* , 'iOS >=7' */]
               })
             ]
           }
@@ -93,8 +90,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin([paths.dist]),
+    new CleanWebpackPlugin([paths.dist, paths.tmp]),
     new HtmlWebpackPlugin({
       template: 'src/index.html'
     })
@@ -112,8 +108,6 @@ module.exports = {
   externals: {
   },
   entry: [
-    'webpack/hot/dev-server',
-    'webpack-hot-middleware/client',
     './src/index'
   ]
 };
