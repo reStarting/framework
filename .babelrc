@@ -1,9 +1,9 @@
 {
   "presets": [
-    ["env", {
-      "useBuiltIns": false,
+    ["@babel/preset-env", {
+      "useBuiltIns": "usage",
       "modules": false,
-      "debug": true,
+      "debug": false,
       "targets": {
         "browsers": ["> 1%", "ie > 8"]
       }

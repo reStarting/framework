@@ -1,35 +1,46 @@
-const webpack = require('webpack');
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const FailPlugin = require('webpack-fail-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 
+const paths = {
+  src: 'src',
+  dist: 'dist'
+}
+
 module.exports = {
+  mode: 'production', //'development',
+  optimization: {
+    splitChunks: {
+      chunks: 'async',
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          chunks: 'all'
+        }
+      }
+    },
+    runtimeChunk: true
+  },
   module: {
-    loaders: [
-      {
-        test: /\.json$/,
-        loaders: [
-          'json-loader'
-        ]
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader',
-        enforce: 'pre'
-      },
+    rules: [
+      // {
+      //   test: /\.js$/,
+      //   exclude: /node_modules/,
+      //   loader: 'eslint-loader',
+      //   enforce: 'pre'
+      // },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: [
+        use: [
           'babel-loader'
         ]
       },
       {
         test: /\.vue$/,
-        loaders: [
+        use: [
           'vue-loader'
         ]
       },
@@ -65,7 +76,15 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [{
-          loader: 'postcss-loader'
+          loader: 'postcss-loader',
+          options: {
+            plugins: () => [
+              autoprefixer({
+                remove: false,
+                browsers: ['> 1%', 'last 3 versions', 'Firefox >= 20'/* , 'iOS >=7' */]
+              })
+            ]
+          }
         }, {
           loader: 'sass-loader',
           options: {
@@ -85,22 +104,14 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-    FailPlugin,
+    new CleanWebpackPlugin([paths.dist]),
     new HtmlWebpackPlugin({
       template: 'src/index.html'
-    }),
-    new webpack.LoaderOptionsPlugin({
-      options: {
-        postcss: () => [autoprefixer({ remove: false, browsers: ['> 1%', 'last 3 versions', 'Firefox >= 20'/* , 'iOS >=7' */] })]
-      },
-      debug: true
     })
   ],
   devtool: 'source-map',
   output: {
-    path: '.tmp',
+    path: path.join(__dirname, paths.dist),
     publicPath: '/',
     filename: 'index.js'
   },
@@ -114,6 +125,6 @@ module.exports = {
   entry: [
     // 'webpack/hot/dev-server',
     // 'webpack-hot-middleware/client',
-    `./src/index`
+    './src/index'
   ]
 };
