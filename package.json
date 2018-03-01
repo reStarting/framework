@@ -1,0 +1,14 @@
+{
+  "name": "xidian",
+  "version": "1.0.0",
+  "description": "西电定制",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "author": "Mi",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^4.0.1"
+  }
+}
