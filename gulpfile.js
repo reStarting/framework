@@ -1,32 +1,47 @@
 const gulp = require('gulp');
 const webpack = require('webpack');
-const log = require('fancy-log');
+// const log = require('fancy-log');
+const browserSync = require('browser-sync');
+var webpackDevMiddleware = require('webpack-dev-middleware');
+var webpackHotMiddleware = require('webpack-hot-middleware');
+var proxy = require('http-proxy-middleware');
+
+var api = proxy('/api/', {
+  target: 'http://localhost:1234/',
+  changeOrigin: true,
+  logLevel: 'debug'
+});
+
 const webpackConf = require('./webpack.config');
 
-function webpackWrapper(done) {
-  return (error, status) => {
-    log(status.toString({
-      colors: true,
-      chunks: false,
-      hash: false,
-      version: false
-    }));
-    if (error) {
-      log.error('webpack', error.toString());
-      this.emit('end');
-    }
-    if (done) {
-      done();
-    }
-  }
+function browserSyncWrapper(bundler) {
+  browserSync({
+    server: {
+      baseDir: [ './dist' ],
+      middleware: [
+        api,
+        webpackDevMiddleware(bundler, {
+          publicPath: webpackConf.output.publicPath,
+          stats: { colors: true }
+        }),
+        webpackHotMiddleware(bundler)
+      ]
+    },
+    files: [
+      'src/**/*.css',
+      'src/**/*.html'
+    ]
+  })
 }
 
 
-gulp.task('webpack:dev', done => {
+gulp.task('webpack:dev', () => {
   const bundle = webpack({...webpackConf, mode: 'development'});
-  bundle.watch(200, webpackWrapper(done))
+  // bundle.watch(200, webpackWrapper(done))
+  browserSyncWrapper(bundle);
 });
-gulp.task('webpack:build', done => {
+gulp.task('webpack:build', () => {
   const bundle = webpack({...webpackConf, mode: 'production'});
-  bundle.run(webpackWrapper(done))
+  browserSyncWrapper(bundle);
+  // bundle.run(webpackWrapper(done))
 })

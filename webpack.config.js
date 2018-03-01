@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -92,6 +93,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new CleanWebpackPlugin([paths.dist]),
     new HtmlWebpackPlugin({
       template: 'src/index.html'
@@ -110,8 +112,8 @@ module.exports = {
   externals: {
   },
   entry: [
-    // 'webpack/hot/dev-server',
-    // 'webpack-hot-middleware/client',
+    'webpack/hot/dev-server',
+    'webpack-hot-middleware/client',
     './src/index'
   ]
 };
