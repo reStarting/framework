@@ -90,7 +90,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin([paths.dist, paths.tmp]),
+    new CleanWebpackPlugin([paths.dist]),
     new HtmlWebpackPlugin({
       template: 'src/index.html'
     })
