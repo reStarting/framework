@@ -65,19 +65,22 @@ gulp.task('webpack:dev', () => {
     'webpack/hot/dev-server',
     'webpack-hot-middleware/client'
   );
-  const bundle = webpack({ ...webpackConf, mode: 'development' });
+  const bundle = webpack(Object.assign({}, webpackConf, {mode: 'development' }));
   // bundle.watch(200, webpackWrapper(done))
   browserSyncWrapper(bundle);
 });
 gulp.task('webpack:build', done => {
-  const bundle = webpack({ ...webpackConf, mode: 'production' });
+  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+    .BundleAnalyzerPlugin;
+  webpackConf.plugins.push(new BundleAnalyzerPlugin());
+  const bundle = webpack(Object.assign({},  webpackConf, {mode: 'production' }));
   bundle.run(webpackWrapper(done));
 });
 
 function copy(prefix, files = '/**/*') {
   const fileFilter = filter(file => file.stat.isFile());
   return gulp
-    .src([path.join(paths.src, prefix + files)])
+    .src([path.join(__dirname, paths.src, prefix, files)])
     .pipe(fileFilter)
     .pipe(gulp.dest(paths.dist + prefix));
 }
